@@ -6,6 +6,29 @@ public class Main {
         System.out.println(String.format("{%d}, %s", index, object.toString()));
     }
 
+    public static void demoRandom() {
+        Random random = new Random();
+        random.setSeed(1);
+        print(1, random.nextInt(1000));
+        print(2, random.nextFloat());
+
+        List<Integer> array = Arrays.asList(new Integer[]{1, 2, 3, 4, 5});
+        Collections.shuffle(array);
+        print(3, array);
+
+        Date date = new Date();
+        print(4, date);
+        print(5, date.getTime());
+
+    }
+
+    public static void demoMath() {
+        print(1, Math.log(3));
+        print(2, Math.min(3, 5));
+        print(3, Math.max(3, 5));
+        print(4, Math.ceil(2.2));
+        print(5, Math.floor(4.5));
+    }
     public static void demoString() {
         String str = "hello world";
         print(1, str.indexOf('x'));
@@ -116,13 +139,16 @@ public class Main {
         }
     }
 
+
     public static void main(String[] args) {
         //System.out.println("Hello World!");
         //print(1,"Hello World");
         //demoString();
         //demoList();
         //demoMapTable();
-        demoSet();
+        //demoSet();
+        //demoRandom();
+        demoMath();
     }
 
 }
