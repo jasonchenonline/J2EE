@@ -1,7 +1,7 @@
 import java.util.*;
 
 public class Main {
-    //请完成上传一份Java的代码，代码包括Java Random，Math，String类相关成员函数的使用，ArrayList，Set，HashMap等各种容器类的使用。
+    //Exercise code: Java Random，Math，String Class and it's method，ArrayList，Set，HashMap and other container。
     public static void  print(int index, Object object) {
         System.out.println(String.format("{%d}, %s", index, object.toString()));
     }
