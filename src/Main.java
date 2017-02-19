@@ -1,7 +1,7 @@
 import java.util.*;
 
 public class Main {
-    //Exercise code: Java Random，Math，String Class and it's method，ArrayList，Set，HashMap and other container。
+    // Exercise code: Java Random，Math，String Class and it's method，ArrayList，Set，HashMap and other container。
     public static void  print(int index, Object object) {
         System.out.println(String.format("{%d}, %s", index, object.toString()));
     }
