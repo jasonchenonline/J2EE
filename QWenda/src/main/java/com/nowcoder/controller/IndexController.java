@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by Administrator on 2016/7/12.
+ * Created by JasonC 2017-02-20.
  */
 @Controller
     public class IndexController {
@@ -43,6 +43,13 @@ import java.util.Map;
                           @RequestParam(value = "key", required = false) String key) {
         return String.format("Profile Page of %s / %d, type:%d key: %s", groupId, userId, type, key);
     }
+
+    @RequestMapping(path={"/vm"}, method = {RequestMethod.GET})
+    public String template(Model model){
+        model.addAttribute("value1", "adasdsad");
+        return "home";
+    }
+
 }//    @Autowired
 //    WendaService wendaService;
 //
