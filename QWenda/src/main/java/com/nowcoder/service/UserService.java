@@ -1,7 +1,8 @@
 package com.nowcoder.service;
 
+import com.nowcoder.dao.LoginTicketDAO;
 import com.nowcoder.dao.UserDAO;
-//import com.nowcoder.model.LoginTicket;
+import com.nowcoder.model.LoginTicket;
 import com.nowcoder.model.User;
 import com.nowcoder.util.WendaUtil;
 import org.apache.commons.lang.StringUtils;
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 
 /**
- * Created by nowcoder on 2016/7/2.
+ * Created by JasonC on 2017/3/12.
  */
 @Service
 public class UserService {
@@ -21,10 +22,8 @@ public class UserService {
     @Autowired
     private UserDAO userDAO;
 
-/*
     @Autowired
     private LoginTicketDAO loginTicketDAO;
-*/
 
     public User selectByName(String name) {
         return userDAO.selectByName(name);
@@ -49,7 +48,7 @@ public class UserService {
             return map;
         }
 
-        // 密码强度
+        // password stength
         user = new User();
         user.setName(username);
         user.setSalt(UUID.randomUUID().toString().substring(0, 5));
@@ -58,9 +57,9 @@ public class UserService {
         user.setPassword(WendaUtil.MD5(password+user.getSalt()));
         userDAO.addUser(user);
 
-        // 登陆
-        //String ticket = addLoginTicket(user.getId());
-        //map.put("ticket", ticket);
+        // login
+        String ticket = addLoginTicket(user.getId());
+        map.put("ticket", ticket);
         return map;
     }
 
@@ -89,29 +88,29 @@ public class UserService {
             return map;
         }
 
-        //String ticket = addLoginTicket(user.getId());
-        //map.put("ticket", ticket);
+        String ticket = addLoginTicket(user.getId());
+        map.put("ticket", ticket);
         map.put("userId", user.getId());
         return map;
     }
 
- /*   private String addLoginTicket(int userId) {
+    private String addLoginTicket(int userId) {
         LoginTicket ticket = new LoginTicket();
         ticket.setUserId(userId);
         Date date = new Date();
-        date.setTime(date.getTime() + 1000*3600*24);
+        date.setTime(date.getTime() + 100*3600*24);
         ticket.setExpired(date);
-        ticket.setStatus(0);
+        ticket.setStatus(0); //is valid
         ticket.setTicket(UUID.randomUUID().toString().replaceAll("-", ""));
         loginTicketDAO.addTicket(ticket);
         return ticket.getTicket();
-    }*/
+    }
 
     public User getUser(int id) {
         return userDAO.selectById(id);
     }
 
     public void logout(String ticket) {
-        //loginTicketDAO.updateStatus(ticket, 1);
+        loginTicketDAO.updateStatus(ticket, 1);
     }
 }
