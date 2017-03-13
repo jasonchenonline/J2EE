@@ -63,14 +63,10 @@ public class LoginController {
     }
 
     @RequestMapping(path = {"/reglogin"}, method = {RequestMethod.GET})
-    public String regloginPage(Model model) {
-        //model.addAttribute("next", next);
+    public String regloginPage(Model model, @RequestParam(value = "next", required = false) String next) {
+        model.addAttribute("next", next);
         return "login";
     }
-//    public String regloginPage(Model model, @RequestParam(value = "next", required = false) String next) {
-//        model.addAttribute("next", next);
-//        return "login";
-//    }
 
     @RequestMapping(path = {"/login/"}, method = {RequestMethod.POST})
     public String login(Model model, @RequestParam("username") String username,
