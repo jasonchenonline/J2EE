@@ -2,6 +2,7 @@ package com.nowcoder.controller;
 
 import com.nowcoder.model.*;
 import com.nowcoder.service.CommentService;
+import com.nowcoder.service.LikeService;
 import com.nowcoder.service.QuestionService;
 import com.nowcoder.service.UserService;
 import com.nowcoder.util.WendaUtil;
@@ -39,8 +40,8 @@ public class QuestionController {
 //    @Autowired
 //    FollowService followService;
 //
-//    @Autowired
-//    LikeService likeService;
+    @Autowired
+    LikeService likeService;
 //
 //    @Autowired
 //    EventProducer eventProducer;
@@ -58,10 +59,10 @@ public class QuestionController {
             if (hostHolder.getUser() == null) {
                 vo.set("liked", 0);
             } else {
-                //vo.set("liked", likeService.getLikeStatus(hostHolder.getUser().getId(), EntityType.ENTITY_COMMENT, comment.getId()));
+                vo.set("liked", likeService.getLikeStatus(hostHolder.getUser().getId(), EntityType.ENTITY_COMMENT, comment.getId()));
             }
 
-            //vo.set("likeCount", likeService.getLikeCount(EntityType.ENTITY_COMMENT, comment.getId()));
+            vo.set("likeCount", likeService.getLikeCount(EntityType.ENTITY_COMMENT, comment.getId()));
             vo.set("user", userService.getUser(comment.getUserId()));
             comments.add(vo);
         }
