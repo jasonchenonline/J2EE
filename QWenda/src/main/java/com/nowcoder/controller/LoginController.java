@@ -4,6 +4,9 @@ package com.nowcoder.controller;
 //import com.nowcoder.async.EventModel;
 //import com.nowcoder.async.EventProducer;
 //import com.nowcoder.async.EventType;
+import com.nowcoder.async.EventModel;
+import com.nowcoder.async.EventProducer;
+import com.nowcoder.async.EventType;
 import com.nowcoder.service.UserService;
 import com.nowcoder.util.WendaUtil;
 import org.apache.commons.lang.StringUtils;
@@ -28,8 +31,8 @@ public class LoginController {
     @Autowired
     UserService userService;
 
-    //@Autowired
-    //EventProducer eventProducer;
+    @Autowired
+    EventProducer eventProducer;
 
     @RequestMapping(path = {"/reg/"}, method = {RequestMethod.POST})
     public String reg(Model model, @RequestParam("username") String username,
@@ -87,9 +90,9 @@ public class LoginController {
                 }
                 response.addCookie(cookie);
 
-//                eventProducer.fireEvent(new EventModel(EventType.LOGIN)
-//                        .setExt("username", username).setExt("email", "zjuyxy@qq.com")
-//                        .setActorId((int)map.get("userId")));
+                eventProducer.fireEvent(new EventModel(EventType.LOGIN)
+                        .setExt("username", username).setExt("email", "zjuyxy@qq.com")
+                        .setActorId((int)map.get("userId")));
 
                 if (StringUtils.isNotBlank(next)) {
                     return "redirect:" + next;
