@@ -1,10 +1,10 @@
 package com.nowcoder.controller;
 
+import com.nowcoder.async.EventModel;
+import com.nowcoder.async.EventProducer;
+import com.nowcoder.async.EventType;
 import com.nowcoder.model.*;
-import com.nowcoder.service.CommentService;
-import com.nowcoder.service.LikeService;
-import com.nowcoder.service.QuestionService;
-import com.nowcoder.service.UserService;
+import com.nowcoder.service.*;
 import com.nowcoder.util.WendaUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,22 +37,22 @@ public class QuestionController {
     @Autowired
     CommentService commentService;
 
-//    @Autowired
-//    FollowService followService;
-//
+    @Autowired
+    FollowService followService;
+
     @Autowired
     LikeService likeService;
-//
-//    @Autowired
-//    EventProducer eventProducer;
+
+    @Autowired
+    EventProducer eventProducer;
 
     @RequestMapping(value = "/question/{qid}", method = {RequestMethod.GET})
     public String questionDetail(Model model, @PathVariable("qid") int qid) {
         Question question = questionService.getById(qid);
         model.addAttribute("question", question);
 
-        List<Comment> commentList = commentService.getCommentsByEntity(qid, EntityType.ENTITY_QUESTION); //placeholder for comments
-        List<ViewObject> comments = new ArrayList<ViewObject>(); //bag for UI to display, list.
+        List<Comment> commentList = commentService.getCommentsByEntity(qid, EntityType.ENTITY_QUESTION);
+        List<ViewObject> comments = new ArrayList<ViewObject>();
         for (Comment comment : commentList) {
             ViewObject vo = new ViewObject();
             vo.set("comment", comment);
@@ -71,21 +71,21 @@ public class QuestionController {
 
         List<ViewObject> followUsers = new ArrayList<ViewObject>();
         // 获取关注的用户信息
-        //List<Integer> users = followService.getFollowers(EntityType.ENTITY_QUESTION, qid, 20);
-//        for (Integer userId : users) {
-//            ViewObject vo = new ViewObject();
-//            User u = userService.getUser(userId);
-//            if (u == null) {
-//                continue;
-//            }
-//            vo.set("name", u.getName());
-//            vo.set("headUrl", u.getHeadUrl());
-//            vo.set("id", u.getId());
-//            followUsers.add(vo);
-//        }
+        List<Integer> users = followService.getFollowers(EntityType.ENTITY_QUESTION, qid, 20);
+        for (Integer userId : users) {
+            ViewObject vo = new ViewObject();
+            User u = userService.getUser(userId);
+            if (u == null) {
+                continue;
+            }
+            vo.set("name", u.getName());
+            vo.set("headUrl", u.getHeadUrl());
+            vo.set("id", u.getId());
+            followUsers.add(vo);
+        }
         model.addAttribute("followUsers", followUsers);
         if (hostHolder.getUser() != null) {
-            //model.addAttribute("followed", followService.isFollower(hostHolder.getUser().getId(), EntityType.ENTITY_QUESTION, qid));
+            model.addAttribute("followed", followService.isFollower(hostHolder.getUser().getId(), EntityType.ENTITY_QUESTION, qid));
         } else {
             model.addAttribute("followed", false);
         }
@@ -103,17 +103,20 @@ public class QuestionController {
             question.setTitle(title);
             if (hostHolder.getUser() == null) {
                 question.setUserId(WendaUtil.ANONYMOUS_USERID);
-                 return WendaUtil.getJSONString(999);
+                // return WendaUtil.getJSONString(999);
             } else {
                 question.setUserId(hostHolder.getUser().getId());
             }
             if (questionService.addQuestion(question) > 0) {
+                eventProducer.fireEvent(new EventModel(EventType.ADD_QUESTION)
+                        .setActorId(question.getUserId()).setEntityId(question.getId())
+                        .setExt("title", question.getTitle()).setExt("content", question.getContent()));
                 return WendaUtil.getJSONString(0);
             }
         } catch (Exception e) {
-            logger.error("Failed to add question" + e.getMessage());
+            logger.error("增加题目失败" + e.getMessage());
         }
-        return WendaUtil.getJSONString(1, "Failed");
+        return WendaUtil.getJSONString(1, "失败");
     }
 
 }
